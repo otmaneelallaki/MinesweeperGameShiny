@@ -24,14 +24,14 @@ GeneratePlayerMap <- function(n) {
   arr <- matrix('-', nrow=n, ncol=n, byrow=TRUE)
   return(arr)
   
-  DisplayMap <- function(map) {
+DisplayMap <- function(map) {
     for (row in map) {
       cat(paste(paste(row, collapse = " "), "\n", sep = ""))
     }
     cat("\n")
   }
   
-  CheckWon <- function(map) {
+CheckWon <- function(map) {
     for (row in map) {
       for (cell in row) {
         if (cell == "-") {
@@ -42,7 +42,7 @@ GeneratePlayerMap <- function(n) {
     return(TRUE)
   }
   
-  CheckContinueGame <- function(score) {
+CheckContinueGame <- function(score) {
     cat("Your score: ", score, "\n")
     isContinue <- readline(prompt = "Do you want to try again? (y/n) :")
     if (isContinue == "n") {
@@ -98,5 +98,7 @@ Game <- function() {
     }
   }
 }
-
-
+Game()
+b
+1
+1
