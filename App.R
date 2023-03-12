@@ -1,35 +1,22 @@
 library(shiny)
 library(shinyjs)
-library(lubridate)
+#library(lubridate)
+source("initialize_board.R")
 
-initialize_board <- function() {
-  # Create a blank 8x8 game board
-  board <- matrix(0, nrow = 10, ncol = 10)
-  
-  # Randomly place 10 mines on the game board
-  mine_indices <- sample(1:100, 10, replace = FALSE)
-  board[mine_indices] <- -1
-  
-  # Assign the appropriate number of mines to each button based on its adjacent buttons
-  for (i in 1:10) {
-    for (j in 1:10) {
-      if (board[i, j] != -1) {
-        num_adjacent_mines <- sum(board[max(i-1,1):min(i+1,10), max(j-1,1):min(j+1,10)] == -1)
-        board[i, j] <- num_adjacent_mines
-      }
-    }
-  }
-  
-  return(board)
-}
+
 
 ui <- fluidPage(
   useShinyjs(),
   headerPanel('Minesweeper Game'),
-  #tags$style(HTML("body {background-color: green;}")),
+  tags$style(HTML("body {background-color: green;}")),
   
   sidebarPanel(
-    selectInput('xcol', 'difficulty', c("Easy", "Normal", "Hard"), selected = "Normal"),
+    sliderInput("numberMine", "number of mines :", min = 10, max = 100, value = 10),
+    
+    sliderInput('numberRow', "number of row :", 10, min = 4, max = 30),
+    
+    actionButton("reset", "New partie"),
+    
     textOutput('timeleft')
   ),
   
@@ -39,7 +26,14 @@ ui <- fluidPage(
       align = "center",
       actionButton("flag", "🚩"),
       actionButton("bomb", "💣")),
-    
+      uiOutput("buttonGroup")
+  )
+)
+
+server <- function(input, output, session) {
+  
+  output$buttonGroup <- renderUI({
+    n = input$numberRow
     fluidRow(
       align = "center",
       br(),
@@ -48,9 +42,9 @@ ui <- fluidPage(
              tags$style(type = "text/css", "#grid button { width: 50px; height: 50px; }"),
              
              div(id = "grid",
-                 lapply(1:10, function(i) {
+                 lapply(1:n, function(i) {
                    div(
-                     lapply(1:10, function(j) {
+                     lapply(1:n, function(j) {
                        actionButton(paste0("btn", i, j), "", #example, when i = 3 and j = 5, the expression paste0("btn", i, j) evaluates to the string "btn35"
                                     style = "color: white; background-color: grey;")
                      }),
@@ -61,10 +55,9 @@ ui <- fluidPage(
              )
       )
     )
-  )
-)
-
-server <- function(input, output, session) {
+    
+  })
+  
   # Initialize the timer, not active.
   timer <- reactiveVal(0)
   active <- reactiveVal(FALSE)
@@ -86,8 +79,14 @@ server <- function(input, output, session) {
     })
   })
   
-  rv <- reactiveValues(board = initialize_board)
-  rv$board <- initialize_board()
+  NM <- reactive({input$numberMine})
+  NR <- reactive({input$numberRow})
+  
+  board <- reactive({
+    initialize_board(NR(), NM())
+  })
+  #rv <- reactiveValues(board = initialize_board)
+  #board() <- initialize_board()
   
   global <- reactiveValues(clicked = "")
   
@@ -100,8 +99,8 @@ server <- function(input, output, session) {
     global$clicked = FALSE})
   
   observe({
-    lapply(1:10, function(i) {
-      lapply(1:10, function(j) {
+    lapply(1:NR(), function(i) {
+      lapply(1:NR(), function(j) {
         id <- paste0("btn", i, j)
         observeEvent(input[[id]], {
           if (global$clicked == TRUE){
@@ -110,28 +109,28 @@ server <- function(input, output, session) {
           
           if (global$clicked == FALSE){
             
-            if (rv$board[i, j] == -1) {
+            if (board()[i, j] == -1) {
               # If the button is a mine, reveal all mines and end the game
-              for (x in 1:10) {
-                for (y in 1:10) {
+              for (x in 1:NR()) {
+                for (y in 1:NR()) {
                   button_id <-paste0("btn",x, y)
-                  updateActionButton(session, button_id, label = rv$board[x, y])
+                  updateActionButton(session, button_id, label = board()[x, y])
                 }
               }
               active(FALSE)
               showModal(modalDialog("Game over! You hit a mine.", easyClose = TRUE))
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
-              updateActionButton(session, id, label = rv$board[i, j])
-              if (rv$board[i, j] == 0) {
-                for (x in max(i-2,1):min(i+2,10)) {
-                  for (y in max(j-2,1):min(j+2,10)) {
-                    if (rv$board[x, y] != -1) {
+              updateActionButton(session, id, label = board()[i, j])
+              if (board()[i, j] == 0) {
+                for (x in max(i-2,1):min(i+2,NR())) {
+                  for (y in max(j-2,1):min(j+2,NR())) {
+                    if (board[x, y] != -1) {
                       adjacent_button_id <- paste0("btn",x, y)
                       if (!input[[adjacent_button_id]]) {
                         shinyjs::disable(adjacent_button_id) 
                         # Only reveal adjacent buttons if they have not been clicked yet
-                        updateActionButton(session, adjacent_button_id, label = rv$board[x, y])
+                        updateActionButton(session, adjacent_button_id, label = board[x, y])
                       }
                     }
                   }
@@ -139,14 +138,14 @@ server <- function(input, output, session) {
               }
             }
             #updateActionButton(session, paste0("btn", i, j), label = "1")
-            }
+          }
         })
       })
     })
   })
   
   
-
+  
   
 }
 
