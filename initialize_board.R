@@ -1,4 +1,5 @@
 initialize_board <- function(rowNumber, MineNumber) {
+  
   # Create a blank rowNumber x rowNumber game board
   board <- matrix(0, nrow = rowNumber, ncol = rowNumber)
   
@@ -15,6 +16,8 @@ initialize_board <- function(rowNumber, MineNumber) {
       }
     }
   }
+
+  
   
   return(board)
 }

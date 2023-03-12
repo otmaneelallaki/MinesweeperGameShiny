@@ -1,6 +1,6 @@
 library(shiny)
 library(shinyjs)
-#library(lubridate)
+library(lubridate)   # for time 
 source("initialize_board.R")
 
 
@@ -11,22 +11,28 @@ ui <- fluidPage(
   tags$style(HTML("body {background-color: green;}")),
   
   sidebarPanel(
-    sliderInput("numberMine", "number of mines :", min = 10, max = 100, value = 10),
+    sliderInput("numberMine", "number of mines :", min = 5, max = 100, value = 5),
     
-    sliderInput('numberRow', "number of row :", 10, min = 4, max = 30),
+    sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
     
-    actionButton("reset", "New partie"),
     
-    textOutput('timeleft')
+    textOutput('timeleft'),
+    textOutput("clickedNum")
   ),
   
   mainPanel(
+    actionButton("reset", "New partie"),
+    actionButton("StayFlag", "Number of flags left 🚩"),
+    
+    column(
+      12,
+      uiOutput("buttonGroup"),
     column(
       2,
       align = "center",
       actionButton("flag", "🚩"),
-      actionButton("bomb", "💣")),
-      uiOutput("buttonGroup")
+      actionButton("bomb", "💣"))
+    )
   )
 )
 
@@ -81,12 +87,10 @@ server <- function(input, output, session) {
   
   NM <- reactive({input$numberMine})
   NR <- reactive({input$numberRow})
-  
-  board <- reactive({
+
+  board <- reactive ({
     initialize_board(NR(), NM())
   })
-  #rv <- reactiveValues(board = initialize_board)
-  #board() <- initialize_board()
   
   global <- reactiveValues(clicked = "")
   
@@ -98,23 +102,35 @@ server <- function(input, output, session) {
     active(TRUE)
     global$clicked = FALSE})
   
+  clickedNum = reactiveVal(0)   # use the counter to count the number saved clicked
+  flagClicked = reactiveVal(0)   # use the counter to count the number of flags used
+  flagleft     = reactive(NM()-flagClicked())   # the number of falgs dispo
+  
   observe({
     lapply(1:NR(), function(i) {
       lapply(1:NR(), function(j) {
         id <- paste0("btn", i, j)
         observeEvent(input[[id]], {
           if (global$clicked == TRUE){
-            
-            updateActionButton(session, paste0("btn", i, j), label = "🚩")}
-          
-          if (global$clicked == FALSE){
+            flagClicked(flagClicked()+1)   # count
+            updateActionButton(session, paste0("btn", i, j), label = "🚩")
+            updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))}
+        
+          if (global$clicked == FALSE ){
             
             if (board()[i, j] == -1) {
               # If the button is a mine, reveal all mines and end the game
-              for (x in 1:NR()) {
+              for (x in 1:NR()) {    # unhide the game
                 for (y in 1:NR()) {
                   button_id <-paste0("btn",x, y)
+                  shinyjs::disable(button_id)
+                  
+                  if (board()[x, y] == -1) {
+                    updateActionButton(session, button_id, label = "💣")
+                  }
+                  else{
                   updateActionButton(session, button_id, label = board()[x, y])
+                  }
                 }
               }
               active(FALSE)
@@ -122,28 +138,42 @@ server <- function(input, output, session) {
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
               updateActionButton(session, id, label = board()[i, j])
+              clickedNum(1+clickedNum())  # count saved clicked
               if (board()[i, j] == 0) {
                 for (x in max(i-2,1):min(i+2,NR())) {
                   for (y in max(j-2,1):min(j+2,NR())) {
-                    if (board[x, y] != -1) {
+                    if (board()[x, y] != -1) {
                       adjacent_button_id <- paste0("btn",x, y)
                       if (!input[[adjacent_button_id]]) {
                         shinyjs::disable(adjacent_button_id) 
+                        
+                        if (isTruthy(!input[[adjacent_button_id]])){ #check if the button is off 
+                        clickedNum(1+clickedNum()) # count saved clicked
                         # Only reveal adjacent buttons if they have not been clicked yet
-                        updateActionButton(session, adjacent_button_id, label = board[x, y])
+                        updateActionButton(session, adjacent_button_id, label = board()[x, y])
                       }
+                    }
                     }
                   }
                 }
               }
             }
-            #updateActionButton(session, paste0("btn", i, j), label = "1")
           }
         })
       })
     })
   })
   
+  output$clickedNum <- renderText({
+    paste("clickedNum: ",clickedNum() )
+  })
+  
+  observe({
+    if ((clickedNum() + flagClicked() ) == (NR()*NR())){
+      showModal(modalDialog("congrat! You Wn.", easyClose = TRUE))
+      active(FALSE)
+    }
+  })
   
   
   
