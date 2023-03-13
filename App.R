@@ -6,6 +6,43 @@ source("initialize_board.R")
 
 
 ui <- fluidPage(
+  # Add CSS to position the buttons
+  tags$head(
+    tags$style(HTML("
+    #grid button { width: 50px; height: 50px; }
+    
+    #reset {
+        position: absolute;
+        top: 50px;
+        left: 10px;
+    
+      }
+      #flag {
+        position: absolute;
+        top: 150px;
+        left: 10px;
+      }
+      
+      #bomb {
+        position: absolute;
+        top: 100px;
+        left: 10px;
+      }
+      
+      #timeleft {
+        position: absolute;
+        width: 170px; 
+        height: 35px;
+        top: 10px;
+        left: 110px;
+        background-color: red;
+        border-radius:4px;
+        border: 1px solid black;
+
+        
+      }
+    "))
+  ),
   useShinyjs(),
   headerPanel('Minesweeper Game'),
   tags$style(HTML("body {background-color: green;}")),
@@ -16,27 +53,35 @@ ui <- fluidPage(
     sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
     
     
-    textOutput('timeleft'),
+    
     textOutput("clickedNum")
   ),
   
   mainPanel(
-    actionButton("reset", "New partie"),
+    h4(textOutput('timeleft')),
+    actionButton("reset", "Start"),
     actionButton("StayFlag", "Number of flags left 🚩"),
-    
-    column(
-      12,
-      uiOutput("buttonGroup"),
-    column(
-      2,
+    uiOutput("buttonGroup"),
       align = "center",
       actionButton("flag", "🚩"),
-      actionButton("bomb", "💣"))
-    )
+      actionButton("bomb", "💣")
   )
 )
 
 server <- function(input, output, session) {
+  
+  observeEvent(input$reset,{
+    updateActionButton(session, "reset", "Restart")
+  })
+  
+  board <- eventReactive (input$reset,{
+      initialize_board(NR(), NM())
+    }) 
+  
+  observeEvent(input$reset,{
+  flagClicked$count = 0   #rest the counter if flags left
+  timer(0)   # reset the time 
+  active(FALSE)
   
   output$buttonGroup <- renderUI({
     n = input$numberRow
@@ -45,7 +90,7 @@ server <- function(input, output, session) {
       br(),
       
       column(width = 8, offset = 2,
-             tags$style(type = "text/css", "#grid button { width: 50px; height: 50px; }"),
+             tags$style(type = "text/css"),
              
              div(id = "grid",
                  lapply(1:n, function(i) {
@@ -63,6 +108,7 @@ server <- function(input, output, session) {
     )
     
   })
+  })
   
   # Initialize the timer, not active.
   timer <- reactiveVal(0)
@@ -70,6 +116,8 @@ server <- function(input, output, session) {
   update_interval = 0.30 # How many seconds between timer updates?
   
   # Output the time left.
+  
+  
   output$timeleft <- renderText({
     paste("Time passed: ", seconds_to_period(timer()))
   })
@@ -88,9 +136,7 @@ server <- function(input, output, session) {
   NM <- reactive({input$numberMine})
   NR <- reactive({input$numberRow})
 
-  board <- reactive ({
-    initialize_board(NR(), NM())
-  })
+  
   
   global <- reactiveValues(clicked = "")
   
@@ -103,16 +149,17 @@ server <- function(input, output, session) {
     global$clicked = FALSE})
   
   clickedNum = reactiveVal(0)   # use the counter to count the number saved clicked
-  flagClicked = reactiveVal(0)   # use the counter to count the number of flags used
-  flagleft     = reactive(NM()-flagClicked())   # the number of falgs dispo
+  flagClicked = reactiveValues(count = 0)   # use the counter to count the number of flags used
+  flagleft     = reactive(NM()-flagClicked$count)   # the number of falgs dispo
   
   observe({
+    
     lapply(1:NR(), function(i) {
       lapply(1:NR(), function(j) {
         id <- paste0("btn", i, j)
         observeEvent(input[[id]], {
           if (global$clicked == TRUE){
-            flagClicked(flagClicked()+1)   # count
+            flagClicked$count = flagClicked$count+1   # count
             updateActionButton(session, paste0("btn", i, j), label = "🚩")
             updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))}
         
@@ -134,7 +181,8 @@ server <- function(input, output, session) {
                 }
               }
               active(FALSE)
-              showModal(modalDialog("Game over! You hit a mine.", easyClose = TRUE))
+              showModal(modalDialog("Game over! You hit a mine 🙁 🙁 🙁.", easyClose = TRUE))
+              
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
               updateActionButton(session, id, label = board()[i, j])
@@ -169,8 +217,8 @@ server <- function(input, output, session) {
   })
   
   observe({
-    if ((clickedNum() + flagClicked() ) == (NR()*NR())){
-      showModal(modalDialog("congrat! You Wn.", easyClose = TRUE))
+    if ((clickedNum() + flagClicked$count ) == (NR()*NR())){
+      showModal(modalDialog("congrat! You Wn 😀😀😀.", easyClose = TRUE))
       active(FALSE)
     }
   })
