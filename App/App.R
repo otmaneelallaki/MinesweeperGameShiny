@@ -85,6 +85,7 @@ server <- function(input, output, session) {
   observeEvent(input$reset,{
   updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
   flagClicked$count = 0   #rest the counter if flags left
+  clickedNum(0)
   timer(0)   # reset the time 
   active(FALSE)
   
@@ -194,23 +195,21 @@ server <- function(input, output, session) {
               showNotification("Good job 😀😀 ", type = "message")
               clickedNum(1+clickedNum())  # count save clicked
               if (board()[i, j] == 0) {
-                for (x in max(i-2,1):min(i+2,NR())) {
-                  for (y in max(j-2,1):min(j+2,NR())) {
+                for (x in max(i-1,1):min(i+1,NR())) {
+                  for (y in max(j-1,1):min(j+1,NR())) {
                     if (board()[x, y] != -1) {
                       adjacent_button_id <- paste0("btn",x, y)
-                     # if (!input[[adjacent_button_id]]) {
-                        shinyjs::disable(adjacent_button_id) 
-                        
-                        if (isTruthy(!input[[adjacent_button_id]])){ #check if the button is off 
-                        clickedNum(1+clickedNum()) # count save clicked
+                      # if (!input[[adjacent_button_id]]) {
+                      shinyjs::disable(adjacent_button_id) 
+                      clickedNum(1+clickedNum()) # count save clicked
                         # Only reveal adjacent buttons if they have not been clicked yet
                         updateActionButton(session, adjacent_button_id, label = board()[x, y])
-                      }
-                    #}
+                      #}
                     }
                   }
                 }
               }
+              
             }
           }
         })
