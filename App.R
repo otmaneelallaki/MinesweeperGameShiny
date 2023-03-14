@@ -9,7 +9,13 @@ ui <- fluidPage(
   # Add CSS to position the buttons
   tags$head(
     tags$style(HTML("
-    #grid button { width: 50px; height: 50px; }
+    body {
+    background-color: green;
+    }
+    
+    #grid button { 
+    width: 50px; height: 50px; 
+    }
     
     #reset {
         position: absolute;
@@ -31,7 +37,7 @@ ui <- fluidPage(
       
       #timeleft {
         position: absolute;
-        width: 170px; 
+        width: 120px; 
         height: 35px;
         top: 10px;
         left: 110px;
@@ -45,14 +51,12 @@ ui <- fluidPage(
   ),
   useShinyjs(),
   headerPanel('Minesweeper Game'),
-  tags$style(HTML("body {background-color: green;}")),
+  #tags$style(HTML("body {background-color: green;}")),
   
   sidebarPanel(
     sliderInput("numberMine", "number of mines :", min = 5, max = 100, value = 5),
     
     sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
-    
-    
     
     textOutput("clickedNum")
   ),
@@ -60,7 +64,7 @@ ui <- fluidPage(
   mainPanel(
     h4(textOutput('timeleft')),
     actionButton("reset", "Start"),
-    actionButton("StayFlag", "Number of flags left 🚩"),
+    actionButton("StayFlag", "Number of flags left 🚩: 5"),
     uiOutput("buttonGroup"),
       align = "center",
       actionButton("flag", "🚩"),
@@ -79,6 +83,7 @@ server <- function(input, output, session) {
     }) 
   
   observeEvent(input$reset,{
+  updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
   flagClicked$count = 0   #rest the counter if flags left
   timer(0)   # reset the time 
   active(FALSE)
@@ -90,7 +95,7 @@ server <- function(input, output, session) {
       br(),
       
       column(width = 8, offset = 2,
-             tags$style(type = "text/css"),
+             #tags$style(type = "text/css", "#grid button { width: 50px; height: 50px; }"),
              
              div(id = "grid",
                  lapply(1:n, function(i) {
@@ -106,7 +111,6 @@ server <- function(input, output, session) {
              )
       )
     )
-    
   })
   })
   
@@ -115,11 +119,10 @@ server <- function(input, output, session) {
   active <- reactiveVal(FALSE)
   update_interval = 0.30 # How many seconds between timer updates?
   
+ 
   # Output the time left.
-  
-  
   output$timeleft <- renderText({
-    paste("Time passed: ", seconds_to_period(timer()))
+    paste("⏰",seconds_to_period(timer()))
   })
   
   # observer that invalidates every second. If timer is active, decrease by one.
@@ -128,7 +131,7 @@ server <- function(input, output, session) {
     isolate({
       if(active())
       {
-        timer(round(timer()+update_interval,2))
+        timer(round(timer()+update_interval,1))
       }
     })
   })
@@ -160,7 +163,7 @@ server <- function(input, output, session) {
         observeEvent(input[[id]], {
           if (global$clicked == TRUE){
             flagClicked$count = flagClicked$count+1   # count
-            updateActionButton(session, paste0("btn", i, j), label = "🚩")
+            updateActionButton(session, paste0("btn", i, j), label = "🚩") 
             updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))}
         
           if (global$clicked == FALSE ){
@@ -173,7 +176,7 @@ server <- function(input, output, session) {
                   shinyjs::disable(button_id)
                   
                   if (board()[x, y] == -1) {
-                    updateActionButton(session, button_id, label = "💣")
+                    updateActionButton(session, button_id, label = "💣") 
                   }
                   else{
                   updateActionButton(session, button_id, label = board()[x, y])
@@ -181,26 +184,26 @@ server <- function(input, output, session) {
                 }
               }
               active(FALSE)
-              showModal(modalDialog("Game over! You hit a mine 🙁 🙁 🙁.", easyClose = TRUE))
+              showModal(modalDialog(h4(paste0("Game over! You hit a mine 🙁 🙁 🙁. \n Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
               
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
               updateActionButton(session, id, label = board()[i, j])
-              clickedNum(1+clickedNum())  # count saved clicked
+              clickedNum(1+clickedNum())  # count save clicked
               if (board()[i, j] == 0) {
                 for (x in max(i-2,1):min(i+2,NR())) {
                   for (y in max(j-2,1):min(j+2,NR())) {
                     if (board()[x, y] != -1) {
                       adjacent_button_id <- paste0("btn",x, y)
-                      if (!input[[adjacent_button_id]]) {
+                     # if (!input[[adjacent_button_id]]) {
                         shinyjs::disable(adjacent_button_id) 
                         
                         if (isTruthy(!input[[adjacent_button_id]])){ #check if the button is off 
-                        clickedNum(1+clickedNum()) # count saved clicked
+                        clickedNum(1+clickedNum()) # count save clicked
                         # Only reveal adjacent buttons if they have not been clicked yet
                         updateActionButton(session, adjacent_button_id, label = board()[x, y])
                       }
-                    }
+                    #}
                     }
                   }
                 }
@@ -218,7 +221,7 @@ server <- function(input, output, session) {
   
   observe({
     if ((clickedNum() + flagClicked$count ) == (NR()*NR())){
-      showModal(modalDialog("congrat! You Wn 😀😀😀.", easyClose = TRUE))
+      showModal(modalDialog(h4(paste0("congrat! You Win 😀😀😀. Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
       active(FALSE)
     }
   })
@@ -226,5 +229,5 @@ server <- function(input, output, session) {
   
   
 }
-
+### showNotification("Button clicked!", type = "message")
 shinyApp(ui, server)
