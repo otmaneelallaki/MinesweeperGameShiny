@@ -138,11 +138,14 @@ server <- function(input, output, session) {
   
   NM <- reactive({input$numberMine})
   NR <- reactive({input$numberRow})
+  # Conditions 
+  observe({
+    if (NM() >= NR()**2 -1  ){
+      showNotification("Are you a terrorist??? Too many mines!!", type = "message")
+    }
+  })
 
-  
-  
   global <- reactiveValues(clicked = "")
-  
   
   observeEvent(input$flag, {
     active(TRUE)
@@ -156,7 +159,6 @@ server <- function(input, output, session) {
   flagleft     = reactive(NM()-flagClicked$count)   # the number of falgs dispo
   
   observe({
-    
     lapply(1:NR(), function(i) {
       lapply(1:NR(), function(j) {
         id <- paste0("btn", i, j)
@@ -189,6 +191,7 @@ server <- function(input, output, session) {
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
               updateActionButton(session, id, label = board()[i, j])
+              showNotification("Good job 😀😀 ", type = "message")
               clickedNum(1+clickedNum())  # count save clicked
               if (board()[i, j] == 0) {
                 for (x in max(i-2,1):min(i+2,NR())) {
@@ -225,9 +228,6 @@ server <- function(input, output, session) {
       active(FALSE)
     }
   })
-  
-  
-  
 }
 ### showNotification("Button clicked!", type = "message")
 shinyApp(ui, server)
