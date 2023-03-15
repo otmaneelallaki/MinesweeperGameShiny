@@ -16,8 +16,6 @@ initialize_board <- function(rowNumber, MineNumber) {
       }
     }
   }
-
-  
   
   return(board)
 }

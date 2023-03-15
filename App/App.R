@@ -42,8 +42,8 @@ ui <- fluidPage(
         top: 10px;
         left: 110px;
         background-color: red;
-        border-radius:4px;
-        border: 1px solid black;
+        border-radius:8px;
+        border: 0px solid black;
 
         
       }
@@ -57,9 +57,7 @@ ui <- fluidPage(
     sliderInput("numberMine", "number of mines :", min = 5, max = 100, value = 5),
     
     sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
-    
-    textOutput("clickedNum")
-  ),
+      ),
   
   mainPanel(
     h4(textOutput('timeleft')),
@@ -83,9 +81,9 @@ server <- function(input, output, session) {
     }) 
   
   observeEvent(input$reset,{
+  discovered$disc = c()
   updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
   flagClicked$count = 0   #rest the counter if flags left
-  clickedNum(0)
   timer(0)   # reset the time 
   active(FALSE)
   
@@ -118,12 +116,11 @@ server <- function(input, output, session) {
   # Initialize the timer, not active.
   timer <- reactiveVal(0)
   active <- reactiveVal(FALSE)
-  update_interval = 0.30 # How many seconds between timer updates?
-  
+  update_interval = 0.1 # How many seconds between timer updates?
  
   # Output the time left.
   output$timeleft <- renderText({
-    paste("⏰",seconds_to_period(timer()))
+    paste("⏰",round(seconds_to_period(timer()),0))
   })
   
   # observer that invalidates every second. If timer is active, decrease by one.
@@ -147,6 +144,7 @@ server <- function(input, output, session) {
   })
 
   global <- reactiveValues(clicked = "")
+  discovered <- reactiveValues(disc=c()) 
   
   observeEvent(input$flag, {
     active(TRUE)
@@ -155,9 +153,9 @@ server <- function(input, output, session) {
     active(TRUE)
     global$clicked = FALSE})
   
-  clickedNum = reactiveVal(0)   # use the counter to count the number saved clicked
   flagClicked = reactiveValues(count = 0)   # use the counter to count the number of flags used
   flagleft     = reactive(NM()-flagClicked$count)   # the number of falgs dispo
+  
   
   observe({
     lapply(1:NR(), function(i) {
@@ -187,24 +185,26 @@ server <- function(input, output, session) {
                 }
               }
               active(FALSE)
-              showModal(modalDialog(h4(paste0("Game over! You hit a mine 🙁 🙁 🙁. \n Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
+              showModal(modalDialog(h4(paste0("Game over! You hit a mine 🙁 🙁 🙁.  Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
               
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
               updateActionButton(session, id, label = board()[i, j])
-              showNotification("Good job 😀😀 ", type = "message")
-              clickedNum(1+clickedNum())  # count save clicked
+              #showNotification("Good job 😀😀 ", type = "message")
+              discovered$disc =  cbind(discovered$disc,id) #### augmente 
               if (board()[i, j] == 0) {
                 for (x in max(i-1,1):min(i+1,NR())) {
                   for (y in max(j-1,1):min(j+1,NR())) {
                     if (board()[x, y] != -1) {
                       adjacent_button_id <- paste0("btn",x, y)
+                      if (!adjacent_button_id %in% discovered$disc ){
+                      discovered$disc =  cbind(discovered$disc,adjacent_button_id)
                       # if (!input[[adjacent_button_id]]) {
                       shinyjs::disable(adjacent_button_id) 
-                      clickedNum(1+clickedNum()) # count save clicked
                         # Only reveal adjacent buttons if they have not been clicked yet
                         updateActionButton(session, adjacent_button_id, label = board()[x, y])
                       #}
+                    }
                     }
                   }
                 }
@@ -217,12 +217,8 @@ server <- function(input, output, session) {
     })
   })
   
-  output$clickedNum <- renderText({
-    paste("clickedNum: ",clickedNum() )
-  })
-  
   observe({
-    if ((clickedNum() + flagClicked$count ) == (NR()*NR())){
+    if ((length(discovered$disc) + flagClicked$count ) == (NR()*NR())){
       showModal(modalDialog(h4(paste0("congrat! You Win 😀😀😀. Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
       active(FALSE)
     }
