@@ -13,6 +13,7 @@ ui <- fluidPage(
     background-color: green;
     }
     
+    
     #grid button { 
     width: 50px; height: 50px; 
     }
@@ -34,29 +35,30 @@ ui <- fluidPage(
         top: 100px;
         left: 10px;
       }
+      #reset0{
+      color: red;
+      background-color: yellow;
+      
+      }
       
       #timeleft {
         position: absolute;
         width: 120px; 
         height: 35px;
         top: 10px;
-        left: 110px;
+        left: 90px;
         background-color: red;
         border-radius:8px;
         border: 0px solid black;
-
-        
       }
     "))
   ),
   useShinyjs(),
   headerPanel('Minesweeper Game'),
-  #tags$style(HTML("body {background-color: green;}")),
-  
   sidebarPanel(
     sliderInput("numberMine", "number of mines :", min = 5, max = 100, value = 5),
-    
     sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
+    actionButton("reset0" , "reset")
       ),
   
   mainPanel(
@@ -72,27 +74,12 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  observeEvent(input$reset,{
-    updateActionButton(session, "reset", "Restart")
-  })
-  
-  board <- eventReactive (input$reset,{
-      initialize_board(NR(), NM())
-    }) 
-  
-  observeEvent(input$reset,{
-  discovered$disc = c()
-  updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
-  flagClicked$count = 0   #rest the counter if flags left
-  timer(0)   # reset the time 
-  active(FALSE)
-  
-  output$buttonGroup <- renderUI({
-    n = input$numberRow
+  # Create the grid 
+  grid <- reactive({
+    n = NR()
     fluidRow(
       align = "center",
       br(),
-      
       column(width = 8, offset = 2,
              #tags$style(type = "text/css", "#grid button { width: 50px; height: 50px; }"),
              
@@ -110,6 +97,50 @@ server <- function(input, output, session) {
              )
       )
     )
+  })
+  
+  # Desplay the Grid
+  output$buttonGroup <- renderUI({     
+    grid()
+  })
+  
+  # liste of descovered buttons
+  discovered <- reactiveValues(disc=c())  
+  
+  # the matrix that contains the hiden values. (-1 = mine)
+  board <- eventReactive (c(input$reset, input$reset0),{
+      initialize_board(NR(), NM())
+    }) 
+  
+  
+  
+  # Reset the game
+    observeEvent(input$reset0,{
+    timer(0)                # reset the time 
+    active(FALSE)           # active the time
+    discovered$disc = c()   # rest the discovered liste into empty
+    updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
+    flagClicked$count = 0   #rest the counter of flags left
+    updateSliderInput(session, "numberMine", value = 5)
+    updateSliderInput(session, "numberRow", value = 6)
+    output$buttonGroup <- renderUI({    # recreate the Grid buttons 
+      grid()
+    })
+  })
+    
+    
+  
+  # Restart the Programme
+  observeEvent(input$reset,{
+    
+    updateActionButton(session, "reset", "Re-start")   # change the label of reset from start into restart
+    discovered$disc = c()                             # rest the discovered liste into empty
+    updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() )) 
+    flagClicked$count = 0   #rest the counter of flags left
+    timer(0)                # reset the time 
+    active(TRUE)           # active the time
+    output$buttonGroup <- renderUI({    # recreate the Grid buttons 
+      grid()
   })
   })
   
@@ -136,26 +167,29 @@ server <- function(input, output, session) {
   
   NM <- reactive({input$numberMine})
   NR <- reactive({input$numberRow})
-  # Conditions 
+  
+  # Conditions: the number of mines have to be < numberof row **2
   observe({
     if (NM() >= NR()**2 -1  ){
-      showNotification("Are you a terrorist??? Too many mines!!", type = "message")
+      showModal(modalDialog(h4(paste0("Are you a terrorist ? Too many mines!! max "),NR()**2 -1, "💣" ), easyClose = FALSE))
+      updateSliderInput(session, "numberMine", value = 5)
     }
+  })
+  
+  observeEvent(c(input$numberMine,input$numberRow),{
+    timer(0)
+    active(FALSE)
   })
 
   global <- reactiveValues(clicked = "")
-  discovered <- reactiveValues(disc=c()) 
   
   observeEvent(input$flag, {
-    active(TRUE)
     global$clicked = TRUE})
   observeEvent(input$bomb, {
-    active(TRUE)
     global$clicked = FALSE})
   
   flagClicked = reactiveValues(count = 0)   # use the counter to count the number of flags used
   flagleft     = reactive(NM()-flagClicked$count)   # the number of falgs dispo
-  
   
   observe({
     lapply(1:NR(), function(i) {
@@ -171,7 +205,7 @@ server <- function(input, output, session) {
             
             if (board()[i, j] == -1) {
               # If the button is a mine, reveal all mines and end the game
-              for (x in 1:NR()) {    # unhide the game
+              for (x in 1:NR()) {    # descover  the Grid
                 for (y in 1:NR()) {
                   button_id <-paste0("btn",x, y)
                   shinyjs::disable(button_id)
@@ -184,13 +218,12 @@ server <- function(input, output, session) {
                   }
                 }
               }
-              active(FALSE)
-              showModal(modalDialog(h4(paste0("Game over! You hit a mine 🙁 🙁 🙁.  Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
-              
+              active(FALSE)    # stop the stopwatch
+              showModal(modalDialog(h4(paste0("Game over! You hit a mine 🙁 🙁 🙁.  Your time : " ,
+                                              seconds_to_period(timer()))), easyClose = TRUE))
             }else {shinyjs::disable(id)
               # If the button is not a mine, reveal the button and any adjacent buttons with 0 mines
               updateActionButton(session, id, label = board()[i, j])
-              #showNotification("Good job 😀😀 ", type = "message")
               discovered$disc =  cbind(discovered$disc,id) #### augmente 
               if (board()[i, j] == 0) {
                 for (x in max(i-1,1):min(i+1,NR())) {
@@ -199,17 +232,14 @@ server <- function(input, output, session) {
                       adjacent_button_id <- paste0("btn",x, y)
                       if (!adjacent_button_id %in% discovered$disc ){
                       discovered$disc =  cbind(discovered$disc,adjacent_button_id)
-                      # if (!input[[adjacent_button_id]]) {
                       shinyjs::disable(adjacent_button_id) 
                         # Only reveal adjacent buttons if they have not been clicked yet
                         updateActionButton(session, adjacent_button_id, label = board()[x, y])
-                      #}
                     }
                     }
                   }
                 }
               }
-              
             }
           }
         })
@@ -219,10 +249,10 @@ server <- function(input, output, session) {
   
   observe({
     if ((length(discovered$disc) + flagClicked$count ) == (NR()*NR())){
-      showModal(modalDialog(h4(paste0("congrat! You Win 😀😀😀. Your time : " ,seconds_to_period(timer()))), easyClose = TRUE))
-      active(FALSE)
+      showModal(modalDialog(h4(paste0("congrat! You Win 😀😀😀. Your time : " ,
+                                      seconds_to_period(timer()))), easyClose = TRUE))
+      active(FALSE) # stop the stopwatch
     }
   })
 }
-### showNotification("Button clicked!", type = "message")
 shinyApp(ui, server)
