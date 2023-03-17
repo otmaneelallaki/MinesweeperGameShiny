@@ -253,9 +253,11 @@ server <- function(input, output, session) {
               if (board()[i, j] == 0) {
                 for (x in max(i-1,1):min(i+1,NR())) {
                   for (y in max(j-1,1):min(j+1,NC())) {
-                    if (board()[x, y] != -1) {
+                    if (board()[x, y] != -1 ) {
                       adjacent_button_id <- paste0("btn",x, y)
-                      if (!adjacent_button_id %in% discovered$disc ){
+                      
+                      if ((!adjacent_button_id %in% discovered$disc) &&
+                          ((sum(flaged$fla ==adjacent_button_id ) %% 2) == 0) ){ # dont discover the flags button
                       discovered$disc =  cbind(discovered$disc,adjacent_button_id)
                       shinyjs::disable(adjacent_button_id) 
                         # Only reveal adjacent buttons if they have not been clicked yet
@@ -281,8 +283,5 @@ server <- function(input, output, session) {
     }
   })
 }
-
-
-# sum(my_list == "a")
 
 shinyApp(ui, server)
