@@ -55,8 +55,8 @@ ui <- fluidPage(
   headerPanel('Minesweeper Game'),
   sidebarPanel(
     sliderInput("numberMine", "number of mines :", min = 5, max = 100, value = 5),
-    sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
-    sliderInput('numberCol', "number of row :", 8, min = 4, max = 30),
+    sliderInput('numberRow', "number of rows :", 6, min = 4, max = 30),
+    sliderInput('numberCol', "number of columns :", 8, min = 4, max = 30),
     actionButton("reset0" , "reset"), 
       ),
   
