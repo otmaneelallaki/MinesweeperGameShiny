@@ -7,8 +7,10 @@ The goal of the game is to clear a rectangular grid of cells without detonating 
 At the start of the game, the player is presented with a grid of covered tiles. The size of the grid and the number of mines hidden within it can be customized by the player. The player can then click on any tile to uncover it. If the tile contains a mine, the game is over and the player loses. If the tile does not contain a mine, it will be replaced by a number that indicates how many mines are hidden in the adjacent tiles. The player can then use this information to deduce which tiles are safe to uncover and which are not.
 
 The game is won when all the non-mine tiles have been uncovered. If the player is unsure whether a tile contains a mine or not, they can place a flag on the tile to indicate that it is suspected to contain a mine. The player can also remove a flag if they change their mind.
+
 ## <ins>Audience<ins>
 
+Whoever interested in playing games is more than welcome to use this app. It is a challenging game that can be enjoyed by players of all ages.
 
 
 
