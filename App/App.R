@@ -52,12 +52,14 @@ ui <- fluidPage(
     "))
   ),
   useShinyjs(),
+  align = "center",
   headerPanel('Minesweeper Game'),
   sidebarPanel(
     sliderInput("numberMine", "number of mines :", min = 5, max = 100, value = 5),
     sliderInput('numberRow', "number of row :", 6, min = 4, max = 30),
     sliderInput('numberCol', "number of row :", 8, min = 4, max = 30),
     actionButton("reset0" , "reset"), 
+    tableOutput("data")
       ),
   
   mainPanel(
@@ -274,6 +276,7 @@ server <- function(input, output, session) {
       })
     })
   })
+  
   
   observe({
     if ((length(discovered$disc) + flagClicked$count ) == (NR()*NC())){
