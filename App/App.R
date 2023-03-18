@@ -65,7 +65,7 @@ ui <- fluidPage(
   mainPanel(
     h4(textOutput('timeleft')),
     actionButton("reset", "Start"),
-    actionButton("StayFlag", "Number of flags left 🚩: 5"),
+    actionButton("StayFlag", "Number of flags remaining 🚩: 5"),
     uiOutput("buttonGroup"),
       align = "center",
       actionButton("flag", "🚩"),
@@ -122,7 +122,7 @@ server <- function(input, output, session) {
     active(FALSE)           # active the time
     discovered$disc = c()   # rest the discovered liste into empty
     flaged$fla      = c()
-    updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
+    updateActionButton(session,"StayFlag", paste0("Number of flags remaining 🚩 : ", flagleft() ))
     flagClicked$count = 0   #rest the counter of flags left
     updateSliderInput(session, "numberMine", value = 5)
     updateSliderInput(session, "numberRow", value = 6)
@@ -140,7 +140,7 @@ server <- function(input, output, session) {
     updateActionButton(session, "reset", "Re-start")   # change the label of reset from start into restart
     discovered$disc = c()                             # rest the discovered liste into empty
     flaged$fla      = c()
-    updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() )) 
+    updateActionButton(session,"StayFlag", paste0("Number of flags remaining 🚩 : ", flagleft() )) 
     flagClicked$count = 0   #rest the counter of flags left
     timer(0)                # reset the time 
     active(TRUE)           # active the time
@@ -206,7 +206,7 @@ server <- function(input, output, session) {
         observeEvent(input[[id]], {
           if (global$clicked == TRUE){
             if (flagleft()==0 ){
-              showNotification("You reach the number of flag disponible", type = "message")
+              showNotification("You have reached the maximum number of available flags", type = "message")
             }
             
             if ((flagleft()!=0) || (id %in% flaged$fla)){  # the secend condition  is for flagleft but i want to change cancel one flag  
@@ -215,13 +215,13 @@ server <- function(input, output, session) {
             flaged$fla =  cbind(flaged$fla,id) # add the falgs or unflag button 
             flagClicked$count = flagClicked$count+1   # count
             updateActionButton(session, id, label = "🚩")  # add flag
-            updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
+            updateActionButton(session,"StayFlag", paste0("Number of flags remaining 🚩 : ", flagleft() ))
             }
             else {  
               flaged$fla =  cbind(flaged$fla,id)  
               flagClicked$count = flagClicked$count-1   # count
               updateActionButton(session, id, label = "")   # Cancel flag 
-              updateActionButton(session,"StayFlag", paste0("Number of flags left 🚩 : ", flagleft() ))
+              updateActionButton(session,"StayFlag", paste0("Number of flags remaining 🚩 : ", flagleft() ))
               
             }
           }
