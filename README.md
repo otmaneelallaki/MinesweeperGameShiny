@@ -26,12 +26,14 @@ David :
   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic2.png" width="1000" title="Suduko">
 </p>
 
->**Note**
->The number of mines is related to the number of rows and columns in the grid. If the number of mines exceeds the number of buttons minus one, a warning >message will appear as shown in the picture below. You can easily dismiss the message by clicking on the "Dismiss" button.
 
-<p >
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic3.png" width="500" title="Suduko">
+>**Note**
+>The number of mines is related to the number of rows and columns in the grid. If the number of mines exceeds the number of buttons minus one, a warning message will appear as shown in the picture below. You can easily dismiss the message by clicking on the "Dismiss" button.
+
+<p align="center" >
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic3.png" width="500" title="Suduko" >
 </p>
+
 
 ### 2. Start the Game
 <p >
