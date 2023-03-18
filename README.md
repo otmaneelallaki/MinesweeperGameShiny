@@ -13,13 +13,6 @@ The game is won when all the non-mine tiles have been uncovered. If the player i
 Whoever interested in playing games is more than welcome to use this app. It is a challenging game that can be enjoyed by players of all ages.
 
 
-
-## <ins>Break Down of Work<ins>
-
-Otmane EL ALLAKI : 
-
-David : 
-
 ## <ins>How To Use This App:</ins>
 
 ### 1. Game difficulty
@@ -47,3 +40,12 @@ David :
 </p>
 
 ### 2. 
+
+
+## <ins>Members of the group<ins>
+
+Otmane EL ALLAKI, otmane.el-allaki@etu.umontpellier.fr
+
+David,  
+
+PROJET M1 SSD -- Programmation R
