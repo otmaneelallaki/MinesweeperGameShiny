@@ -35,12 +35,28 @@ Whoever interested in playing games is more than welcome to use this app. It is 
 
 
 ### 2. Start the Game
+  
+  By clicking on the "Start" button, the game will begin and the timer will start counting. The player can then click on any tile to uncover it. If the player is unsure whether a tile (or more) contains a mine or not, they can click on the "Flag" button and then click on the tile(s) to indicate that it is suspected to contain a mine. The player can also remove a flag if they change their mind by re-clicking agine on it.
+  
 <p >
   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic1.png" width="1000" title="Suduko">
 </p>
 
-### 2. 
-
+### 3. Flags remaining
+  The number of flags is equal to the number of mines. For each time a player puts a flag on a tile, the number of remaining flags decreases by 1. If the player reaches 0 remaining flags, a notification will appear reminding them of this.
+  <p >
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic4.png" width="1000" title="Suduko">
+</p>
+  
+ ### 4. Win and loss
+      - The player wins Minesweeper when all non-mine tiles have been uncovered. Once the game is won, a new window will appear displaying the time taken to complete the game. To return to the game, click the 'dismiss' button.
+      - The player loses Minesweeper when they click on a tile containing a mine.
+  
+  <p >
+   <img src="https://github.com/otmaneelallaki/pic/blob/main/Pic5.png" width="400" title="Suduko">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img src="https://github.com/otmaneelallaki/pic/blob/main/Pic6.png" width="400" title="Suduko">
+</p>
 
 ## <ins>Members of the group<ins>
 
