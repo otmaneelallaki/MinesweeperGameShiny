@@ -61,8 +61,8 @@ Whoever interested in playing games is more than welcome to use this app. It is 
 
 ## <ins>Members of the group<ins>
 
-Otmane EL ALLAKI, otmane.el-allaki@etu.umontpellier.fr
+Otmane EL ALLAKI otmane.el-allaki@etu.umontpellier.fr
 
-David,  
+David david.dzarnecki@etu.umontpellier.fr
 
 PROJET M1 SSD -- Programmation R
