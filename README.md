@@ -53,10 +53,10 @@ Whoever interested in playing games is more than welcome to use this app. It is 
   - The player wins Minesweeper when all non-mine tiles have been uncovered. Once the game is won, a new window will appear displaying the time taken to complete the game. To return to the game, click the 'dismiss' button.
   - The player loses Minesweeper when they click on a tile containing a mine.
   
-  <p >
-   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic5.png" width="400" title="Suduko">
+  <p align="center" >
+   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic5.png" width="450" title="Suduko">
 &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic6.png" width="400" title="Suduko">
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic6.png" width="450" title="Suduko">
 </p>
 
 ## <ins>Members of the group<ins>
