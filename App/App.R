@@ -137,7 +137,6 @@ server <- function(input, output, session) {
   # Restart the Programme
   observeEvent(input$reset,{
     
-    global$clicked = ""
     updateActionButton(session, "reset", "Re-start")   # change the label of reset from start into restart
     discovered$disc = c()                             # rest the discovered liste into empty
     flaged$fla      = c()
@@ -188,7 +187,7 @@ server <- function(input, output, session) {
     active(FALSE)
   })
 
-  global <- reactiveValues(clicked = "")
+  global <- reactiveValues(clicked = FALSE)
   
   observeEvent(input$flag, {
     global$clicked = TRUE
