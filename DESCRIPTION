@@ -1,0 +1,21 @@
+Package: minesweeper
+Title: What the Package Does (One Line, Title Case)
+Version: 0.1.0
+Authors@R: 
+    person("Otmane", "ELALLAKI", , "otmane.el-allaki@etu.umontpellier.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Minesweeper package  is a computer implementation of the game,
+        providing a user-friendly interface that allows players to
+        play the game on their computer. The package includes functions that
+        allow users to create new game boards, specify the size of the board,
+        and the number of mines to place on the board.
+        The user can interact with the game using keyboard or mouse inputs,
+        and the package responds by revealing cells or flagging them as containing mines.
+        The package also provides visual feedback to the user, showing the state of the
+        game board and the cells that have been revealed.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: shiny
+
