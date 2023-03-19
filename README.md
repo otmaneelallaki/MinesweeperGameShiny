@@ -12,6 +12,14 @@ The game is won when all the non-mine tiles have been uncovered. If the player i
 
 Whoever interested in playing games is more than welcome to use this app. It is a challenging game that can be enjoyed by players of all ages.
 
+## <ins>How To install the App:</ins>
+
+The instructions to install the R package "minesweeper" are as follows:
+
+  - download the "minesweeper_0.1.0.tar.gz" file above
+  - Open R console or RStudio and run the following command :
+      1. > 'install.packages("path/to/minesweeper_0.1.0.tar.gz", repos = NULL, type = "source")'
+      2. > 'library(minesweeper)'
 
 ## <ins>How To Use This App:</ins>
 
