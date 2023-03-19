@@ -18,8 +18,8 @@ The instructions to install the R package "minesweeper" are as follows:
 
   - download the "minesweeper_0.1.0.tar.gz" file above
   - Open R console or RStudio and run the following command :
-      1. > 'install.packages("path/to/minesweeper_0.1.0.tar.gz", repos = NULL, type = "source")'
-      2. > 'library(minesweeper)'
+      1. > install.packages("path/to/minesweeper_0.1.0.tar.gz", repos = NULL, type = "source")
+      2. > library(minesweeper)
 
 ## <ins>How To Use This App:</ins>
 
