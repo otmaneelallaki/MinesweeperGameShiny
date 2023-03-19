@@ -30,7 +30,7 @@ The instructions to install the R package "minesweeper" are as follows:
   - <ins>Number of columns</ins>: This controls the number of buttons in each column of the grid.
   - <ins>Reset</ins>: This option ignores any changes made and resets the game to its default settings, which include 5 mines, 6 rows, and 8 columns.
 <p >
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic2.png" width="1000" title="Suduko">
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/inst/shiny/www/Pic2.png" width="1000" title="Suduko">
 </p>
 
 
@@ -38,7 +38,7 @@ The instructions to install the R package "minesweeper" are as follows:
 >The number of mines is related to the number of rows and columns in the grid. If the number of mines exceeds the number of buttons minus one, a warning message will appear as shown in the picture below. You can easily dismiss the message by clicking on the "Dismiss" button.
 
 <p align="center" >
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic3.png" width="500" title="Suduko" >
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/inst/shiny/www/Pic3.png" width="500" title="Suduko" >
 </p>
 
 
@@ -53,7 +53,7 @@ The instructions to install the R package "minesweeper" are as follows:
 ### 3. Flags remaining
   The number of flags is equal to the number of mines. For each time a player puts a flag on a tile, the number of remaining flags decreases by 1. If the player reaches 0 remaining flags, a notification will appear reminding them of this.
   <p >
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic4.png" width="1000" title="Suduko">
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/inst/shiny/www/Pic4.png" width="1000" title="Suduko">
 </p>
   
  ### 4. Win and loss
@@ -62,9 +62,9 @@ The instructions to install the R package "minesweeper" are as follows:
   - The player loses Minesweeper when they click on a tile containing a mine.
   
   <p align="center" >
-   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic5.png" width="450" title="Suduko">
+   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/inst/shiny/www/Pic5.png" width="450" title="Suduko">
 &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic6.png" width="450" title="Suduko">
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/inst/shiny/www/Pic6.png" width="450" title="Suduko">
 </p>
 
 ## <ins>Members of the group<ins>
