@@ -47,7 +47,7 @@ The instructions to install the R package "minesweeper" are as follows:
   By clicking on the "Start" button, the game will begin and the timer will start counting. The player can then click on any tile to uncover it. If the player is unsure whether a tile (or more) contains a mine or not, they can click on the "Flag" button and then click on the tile(s) to indicate that it is suspected to contain a mine. The player can also remove a flag if they change their mind by re-clicking agine on it.
   
 <p >
-  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic1.png" width="1000" title="Suduko">
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/inst/shiny/www/Pic1.png" width="1000" title="Suduko">
 </p>
 
 ### 3. Flags remaining
