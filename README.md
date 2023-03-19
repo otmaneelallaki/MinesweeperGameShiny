@@ -49,19 +49,20 @@ Whoever interested in playing games is more than welcome to use this app. It is 
 </p>
   
  ### 4. Win and loss
-      - The player wins Minesweeper when all non-mine tiles have been uncovered. Once the game is won, a new window will appear displaying the time taken to complete the game. To return to the game, click the 'dismiss' button.
-      - The player loses Minesweeper when they click on a tile containing a mine.
+ 
+  - The player wins Minesweeper when all non-mine tiles have been uncovered. Once the game is won, a new window will appear displaying the time taken to complete the game. To return to the game, click the 'dismiss' button.
+  - The player loses Minesweeper when they click on a tile containing a mine.
   
-  <p >
-   <img src="https://github.com/otmaneelallaki/pic/blob/main/Pic5.png" width="400" title="Suduko">
+  <p align="center" >
+   <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic5.png" width="450" title="Suduko">
 &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="https://github.com/otmaneelallaki/pic/blob/main/Pic6.png" width="400" title="Suduko">
+  <img src="https://github.com/otmaneelallaki/MinesweeperGameShiny/blob/main/Picture/Pic6.png" width="450" title="Suduko">
 </p>
 
 ## <ins>Members of the group<ins>
 
-Otmane EL ALLAKI, otmane.el-allaki@etu.umontpellier.fr
+Otmane EL ALLAKI otmane.el-allaki@etu.umontpellier.fr
 
-David,  
+David david.dzarnecki@etu.umontpellier.fr
 
 PROJET M1 SSD -- Programmation R
