@@ -1,5 +1,7 @@
 # Shiny App Mine Sweeper
 
+Using the R Shiny web framework, a straightforward Minesweeper game has been developed. The game is an adaptation of the classic Minesweeper game and is available for play via a web browser using the shiny package.
+
 ## <ins>Description</ins>
 
 The goal of the game is to clear a rectangular grid of cells without detonating any hidden mines. The grid is initially covered by a set of tiles that can be either blank, numbered, or contain a mine. The player must use logical deduction to determine which tiles contain mines and which do not.
